@@ -1,34 +1,17 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react"; // Import useEffect separately
 import { useSession } from "next-auth/react";
-import Router, { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import NavbarComponent from "./navbar";
-import {
-  Button,
-  Card,
-  CardBody,
-  CardHeader,
-  Typography,
-} from "@material-tailwind/react";
-import { Input } from "@material-tailwind/react";
-import {
-  collection,
-  getDocs,
-  addDoc,
-  deleteDoc,
-  doc,
-  updateDoc,
-} from "firebase/firestore";
-import { db } from "../firebase";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { Button } from "@material-tailwind/react";
 import Link from "next/link";
 
-export default function admin() {
+// Renamed to start with an uppercase letter
+export default function Admin() { 
   const { data: session, status } = useSession();
   const router = useRouter();
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (status === "loading") return;
 
     if (!session) {
@@ -47,7 +30,7 @@ export default function admin() {
         </div>
         <div className="flex items-center justify-center  space-x-8">
           <Link href="admin/admin_createexamsched_prompt">
-          <Button>Create Exam Schedule/s</Button>
+            <Button>Create Exam Schedule/s</Button>
           </Link>
           <Button>View Published Exam Schedules/s</Button>
         </div>
