@@ -6,7 +6,7 @@ import TimePicker from "react-time-picker";
 import "react-time-picker/dist/TimePicker.css";
 import "react-clock/dist/Clock.css";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter} from "next/navigation";
 import NavbarComponent from "../navbar";
 import {
   Button,
@@ -32,7 +32,9 @@ import { db } from "../../firebase";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
 
-export default function CreateExamSched() {
+
+
+export default function CreateExamSched({examDetails}) {
   const [courseTitle, setCourseTitle] = useState("");
   const [courseCode, setCourseCode] = useState("");
   const [examDate, setExamDate] = useState(new Date());
@@ -47,9 +49,16 @@ export default function CreateExamSched() {
   const [courseCodes, setCourseCodes] = useState([]);
   const [roomdata, setRoomData] = useState([]);
   const [proctordata, setProctorData] = useState([]);
-
-  const { data: session, status } = useSession();
   const router = useRouter();
+  const { data: session, status } = useSession();
+  const [sectionValue, setSectionValue] = useState('');
+  const [schoolYearValue, setSchoolYearValue] = useState('');
+  const [semesterValue, setSemesterValue] = useState('');
+  const [examTypeValue, setExamTypeValue] = useState('');
+  const [instituteValue, setInstituteValue] = useState('');
+  const [programValue, setProgramValue] = useState('');
+  const [yearLevelValue, setYearLevelValue] = useState('');
+
 
   React.useEffect(() => {
     if (status === "loading") return;
@@ -101,6 +110,39 @@ export default function CreateExamSched() {
     };
     fetchExams();
   }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const section = params.get("section");
+    const schoolYear = params.get("schoolYear");
+    const semester = params.get("semester");
+    const examType = params.get("examType");
+    const institute = params.get("institute");
+    const program = params.get("program");
+    const yearLevel = params.get("yearLevel");
+
+    fetchData(section, schoolYear, semester, examType, institute, program, yearLevel);
+  }, []);
+
+  const fetchData = (section, schoolYear, semester, examType, institute, program, yearLevel) => {
+    console.log("Fetching data with query parameters:");
+    console.log("Section:", section);
+    console.log("School Year:", schoolYear);
+    console.log("Semester:", semester);
+    console.log("Exam Type:", examType);
+    console.log("Institute:", institute);
+    console.log("Program:", program);
+    console.log("Year Level:", yearLevel);
+
+    setSectionValue(section);
+    setSchoolYearValue(schoolYear);
+    setSemesterValue(semester);
+    setExamTypeValue(examType);
+    setInstituteValue(institute);
+    setProgramValue(program);
+    setYearLevelValue(yearLevel);
+  };
+
 
   const convertTo12HourFormat = (time) => {
     const [hours, minutes] = time.split(":");
@@ -184,7 +226,6 @@ export default function CreateExamSched() {
     const coursesRef = collection(db, "courses");
     const q = query(coursesRef, where("courseCode", "==", exam.courseCode));
     const courseSnapshot = await getDocs(q);
-
     let selectedCourseTitle = "";
     courseSnapshot.forEach((doc) => {
       selectedCourseTitle = doc.data().courseTitle;
@@ -231,8 +272,20 @@ export default function CreateExamSched() {
         </div>
         <div className="flex items-center justify-center space-x-8">
           <Card style={{ width: "80rem" }}>
-            <div className="flex justify-end mb-5">
-              <div style={{ width: "200px" }}>
+            <div className="flex justify-center item mb-5">
+              <div >
+              <h1 className="text-1xl text-center font-bold mt-3 mb-2 text-black">
+                  {examTypeValue} Examination Schedule
+              </h1>
+              <h1 className="text-1xl text-center font-bold mt-3 mb-2 text-black">
+                  {semesterValue} {schoolYearValue}
+              </h1>
+              <h1 className="text-1xl text-center font-bold mt-3 mb-2 text-black">
+                  {yearLevelValue} {programValue} Students
+              </h1>
+              <h1 className="text-1xl text-center font-bold mt-3 mb-2 text-black">
+                   {sectionValue}
+              </h1>
               </div>
             </div>
             <table className="w-full min-w-max table-auto text-left">

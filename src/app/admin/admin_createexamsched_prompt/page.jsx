@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
-import Router, { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import NavbarComponent from "../navbar";
 import {
   Button,
@@ -25,6 +25,7 @@ import {
 import { db } from "@/app/firebase";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
+import CreateExamSched from "../admin_createexamsched/page";
 
 export default function CreateExamSchedPrompt() {
   const { data: session, status } = useSession();
@@ -33,6 +34,14 @@ export default function CreateExamSchedPrompt() {
   const [selectedProgram, setSelectedProgram] = useState("");
   const [programs, setPrograms] = useState([]);
   const [isChooseProgramDisabled, setIsChooseProgramDisabled] = useState(true);
+  const [sectionValue, setSectionValue] = useState('');
+  const [schoolYearValue, setSchoolYearValue] = useState('');
+  const [semesterValue, setSemesterValue] = useState('');
+  const [examTypeValue, setExamTypeValue] = useState('');
+  const [instituteValue, setInstituteValue] = useState('');
+  const [programValue, setProgramValue] = useState('');
+  const [yearLevelValue, setYearLevelValue] = useState('');
+  const [isDone, setisDone] = useState(false)
 
   useEffect(() => {
     // Enable Choose Program Select when an institute is selected
@@ -67,21 +76,26 @@ export default function CreateExamSchedPrompt() {
     if (status === "loading") return;
 
     if (!session) {
-      router.push("/signin");
+      router_navigation.push("/signin");
     }
   }, [session, status, router]);
 
-  function handleInstituteChange(value) {
-    setSelectedInstitute(value);
-  }
+  const handleStartCreating = () => {
+    const queryParams = new URLSearchParams({
+      section: sectionValue,
+      schoolYear: schoolYearValue,
+      semester: semesterValue,
+      examType: examTypeValue,
+      institute: instituteValue,
+      program: programValue,
+      yearLevel: yearLevelValue,
+    }).toString();
+    router.push(`/admin/admin_createexamsched?${queryParams}`);
+  };
 
-  function handleProgramChange(value) {
-    console.log("Selected Program:", value);
-    if(value){
-      setSelectedProgram(value);
-      console.log("Updated Selected Program:", selectedProgram);
-    }
-  }
+  
+
+  
 
   return (
     <>
@@ -95,6 +109,17 @@ export default function CreateExamSchedPrompt() {
         <div className="flex items-center justify-center">
           <Card style={{ width: "20rem" }}>
             <CardBody>
+            <h1 className="text-1xl font-bold mb-3 text-black">
+                Section
+              </h1>
+              <Input
+                color="green"
+                label="Section"
+                crossOrigin={undefined}
+                required
+                size="lg"
+                onChange={(e) => setSectionValue(e.target.value)}
+              />
               <h1 className="text-1xl font-bold mb-3 text-black">
                 Choose School Year
               </h1>
@@ -104,27 +129,32 @@ export default function CreateExamSchedPrompt() {
                 crossOrigin={undefined}
                 required
                 size="lg"
+                onChange={(e) => setSchoolYearValue(e.target.value)}
               />
               <h1 className="text-1xl font-bold mb-3 text-black">
                 Choose Semester
               </h1>
-              <Select>
-                <Option>1st Semester</Option>
-                <Option>2nd Semester</Option>
-              </Select>
+              <Select
+              value={semesterValue}
+              onChange={(value) => setSemesterValue(value)}>
+                <Option value = "1st Semester">1st Semester</Option>
+                <Option value = "2nd Semester">2nd Semester</Option>
+              </Select >
               <h1 className="text-1xl font-bold mb-3 text-black">
                 Choose Exam Type
               </h1>
-              <Select>
-                <Option>Midterm</Option>
-                <Option>Final</Option>
+              <Select
+              value={examTypeValue}
+              onChange={(value) => setExamTypeValue(value)}>
+                <Option value = "Midterm">Midterm</Option>
+                <Option value = "Final">Final</Option>
               </Select>
               <h1 className="text-1xl font-bold mb-3 text-black">
                 Choose Institute
               </h1>
               <Select
-                onChange={(value) => setSelectedInstitute(value)}
-                value={selectedInstitute}
+                value={instituteValue}
+                onChange={(value) => setInstituteValue(value)}
               >
                 <Option value="">Select Institute</Option>
                 <Option value="ICSLIS">ICSLIS</Option>
@@ -133,7 +163,8 @@ export default function CreateExamSchedPrompt() {
                 Choose Program
               </h1>
               <Select
-                disabled={isChooseProgramDisabled}
+                value={programValue}
+                onChange={(value) => setProgramValue(value)} 
               >
                 <Option value="">Select Institute</Option>
                 <Option value="BACHELOR OF SCIENCE IN COMPUTER SCIENCE">BACHELOR OF SCIENCE IN COMPUTER SCIENCE</Option>
@@ -144,20 +175,20 @@ export default function CreateExamSchedPrompt() {
                 Choose Year Level
               </h1>
               <Select
-              value="">
-              <Option value="">Select Institute</Option>
+              value={yearLevelValue}
+              onChange={(value) => setYearLevelValue(value)}>
+              <Option value="">Choose Year Level</Option>
                 <Option value="1st Year">1st Year</Option>
                 <Option value="2nd Year">2nd Year</Option>
                 <Option value="3rd Year">3rd Year</Option>
                 <Option value="4th Year">4th Year</Option>
               </Select>
-              <Link href="/admin/admin_createexamsched">
               <Button
                 className="mt-4 justify-center align-center"
+                onClick={handleStartCreating}
               >
                 Start Creating
               </Button>
-              </Link>
             </CardBody>
           </Card>
         </div>
