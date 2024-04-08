@@ -32,7 +32,7 @@ import { db } from "../../firebase";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
 
-export default function CreateExamSched({ examDetails }) {
+export default function CreateExamSched() {
   const [courseTitle, setCourseTitle] = useState("");
   const [courseCode, setCourseCode] = useState("");
   const [examDate, setExamDate] = useState(new Date());
