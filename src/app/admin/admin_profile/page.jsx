@@ -4,9 +4,10 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import NavbarComponent from "../navbar";
 import { Alert, Button, Card, CardBody, Input } from "@material-tailwind/react";
-import { auth } from "@/app/firebase";
-import { signInWithEmailAndPassword, updatePassword } from "firebase/auth";
-import { getSession } from "next-auth/react";
+import { auth } from "../../firebase";
+import {useAuth} from "next-auth/react"
+import { getAuth, updatePassword } from "firebase/auth";
+import { EmailAuthProvider } from "firebase/auth";
 
 export default function AdminProfile() {
   const { data: session, status } = useSession();
@@ -34,23 +35,35 @@ export default function AdminProfile() {
       setIsError(true);
       return;
     }
-    const email = session.user.email;
-    const currentPassword = oldPassword
+  
     try {
-      await signInWithEmailAndPassword(auth, email, currentPassword);
-      await updatePassword(email, currentPassword, newPassword);
-      console.log("Password updated successfully");
-      setOldPassword("");
-      setNewPassword("");
-      setConfirmPassword("");
-      setErrorMessage("");
-      setIsError(false);
-      console.log("Password updated successfully");
+      const response = await fetch('/api/change-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ oldPassword, newPassword, confirmPassword }),
+      });
+      if (response.ok) {
+        setOldPassword("");
+        setNewPassword("");
+        setConfirmPassword("");
+        setErrorMessage("");
+        setIsError(false);
+        console.log("Password updated successfully");
+      } else {
+        const data = await response.json();
+        setErrorMessage(data.error || 'Failed to change password');
+        setIsError(true);
+        console.error(data.error); // Log specific error message
+      }
     } catch (error) {
-      setErrorMessage(error.message);
+      console.error('Error changing password:', error);
+      setErrorMessage('An error occurred while changing password');
       setIsError(true);
     }
   };
+  
 
   return (
     <>
