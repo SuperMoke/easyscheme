@@ -6,7 +6,7 @@ import TimePicker from "react-time-picker";
 import "react-time-picker/dist/TimePicker.css";
 import "react-clock/dist/Clock.css";
 import { useSession } from "next-auth/react";
-import { useRouter} from "next/navigation";
+import { useRouter } from "next/navigation";
 import NavbarComponent from "../navbar";
 import {
   Button,
@@ -32,13 +32,11 @@ import { db } from "../../firebase";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
 
-
-
-export default function CreateExamSched({examDetails}) {
+export default function CreateExamSched({ examDetails }) {
   const [courseTitle, setCourseTitle] = useState("");
   const [courseCode, setCourseCode] = useState("");
   const [examDate, setExamDate] = useState(new Date());
-  const [startTime, setStartTime] = useState("10:00 AM");
+  const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
   const [room, setRoom] = useState("");
   const [proctor, setProctor] = useState("");
@@ -51,20 +49,19 @@ export default function CreateExamSched({examDetails}) {
   const [proctordata, setProctorData] = useState([]);
   const router = useRouter();
   const { data: session, status } = useSession();
-  const [sectionValue, setSectionValue] = useState('');
-  const [schoolYearValue, setSchoolYearValue] = useState('');
-  const [semesterValue, setSemesterValue] = useState('');
-  const [examTypeValue, setExamTypeValue] = useState('');
-  const [instituteValue, setInstituteValue] = useState('');
-  const [programValue, setProgramValue] = useState('');
-  const [yearLevelValue, setYearLevelValue] = useState('');
-
+  const [sectionValue, setSectionValue] = useState("");
+  const [schoolYearValue, setSchoolYearValue] = useState("");
+  const [semesterValue, setSemesterValue] = useState("");
+  const [examTypeValue, setExamTypeValue] = useState("");
+  const [instituteValue, setInstituteValue] = useState("");
+  const [programValue, setProgramValue] = useState("");
+  const [yearLevelValue, setYearLevelValue] = useState("");
 
   React.useEffect(() => {
     if (status === "loading") return;
 
     if (!session) {
-      router.push("/signin");
+      router.push("/student");
     }
   }, [session, status, router]);
 
@@ -120,10 +117,26 @@ export default function CreateExamSched({examDetails}) {
     const institute = params.get("institute");
     const program = params.get("program");
     const yearLevel = params.get("yearLevel");
-    fetchData(section, schoolYear, semester, examType, institute, program, yearLevel);
+    fetchData(
+      section,
+      schoolYear,
+      semester,
+      examType,
+      institute,
+      program,
+      yearLevel
+    );
   }, []);
 
-  const fetchData = (section, schoolYear, semester, examType, institute, program, yearLevel) => {
+  const fetchData = (
+    section,
+    schoolYear,
+    semester,
+    examType,
+    institute,
+    program,
+    yearLevel
+  ) => {
     setSectionValue(section);
     setSchoolYearValue(schoolYear);
     setSemesterValue(semester);
@@ -132,7 +145,6 @@ export default function CreateExamSched({examDetails}) {
     setProgramValue(program);
     setYearLevelValue(yearLevel);
   };
-
 
   const convertTo12HourFormat = (time) => {
     const [hours, minutes] = time.split(":");
@@ -266,11 +278,15 @@ export default function CreateExamSched({examDetails}) {
       await addDoc(collection(db, "examSchedules"), examSchedule);
       console.log("Exam schedule saved successfully!");
       setExams([]);
+      const examsRef = collection(db, "exams");
+      const querySnapshot = await getDocs(examsRef);
+      querySnapshot.forEach(async (doc) => {
+        await deleteDoc(doc.ref);
+      });
     } catch (error) {
       console.error("Error saving exam schedule:", error);
     }
   };
-
 
   return (
     <>
@@ -284,19 +300,19 @@ export default function CreateExamSched({examDetails}) {
         <div className="flex items-center justify-center space-x-8">
           <Card style={{ width: "80rem" }}>
             <div className="flex justify-center  mb-5">
-              <div >
-              <h1 className="text-1xl text-center font-bold mt-3 mb-2 text-black">
+              <div>
+                <h1 className="text-1xl text-center font-bold mt-3 mb-2 text-black">
                   {examTypeValue} Examination Schedule
-              </h1>
-              <h1 className="text-1xl text-center font-bold mt-3 mb-2 text-black">
+                </h1>
+                <h1 className="text-1xl text-center font-bold mt-3 mb-2 text-black">
                   {semesterValue} {schoolYearValue}
-              </h1>
-              <h1 className="text-1xl text-center font-bold mt-3 mb-2 text-black">
+                </h1>
+                <h1 className="text-1xl text-center font-bold mt-3 mb-2 text-black">
                   {yearLevelValue} {programValue} Students
-              </h1>
-              <h1 className="text-1xl text-center font-bold mt-3 mb-2 text-black">
-                   {sectionValue}
-              </h1>
+                </h1>
+                <h1 className="text-1xl text-center font-bold mt-3 mb-2 text-black">
+                  {sectionValue}
+                </h1>
               </div>
             </div>
             <table className="w-full min-w-max table-auto text-left">
@@ -374,7 +390,9 @@ export default function CreateExamSched({examDetails}) {
               </tbody>
             </table>
             <div className="flex justify-center mt-5">
-            <Button style={{width:"10rem"}} onClick={handleSave}>Save</Button>
+              <Button style={{ width: "10rem" }} onClick={handleSave}>
+                Save
+              </Button>
             </div>
           </Card>
           <Card style={{ width: "20rem" }}>

@@ -36,7 +36,7 @@ export default function RoomManagement() {
     if (status === "loading") return;
 
     if (!session) {
-      router.push("/signin");
+      router.push("/student");
     }
   }, [session, status, router]);
 
@@ -57,7 +57,6 @@ export default function RoomManagement() {
       roomNumber: roomNumber,
     });
 
-    // After adding the room, refetch the rooms
     const querySnapshot = await getDocs(collection(db, "rooms"));
     const roomsData = [];
     querySnapshot.forEach((doc) => {
@@ -65,7 +64,6 @@ export default function RoomManagement() {
     });
     setRooms(roomsData);
 
-    // Clear input fields
     setRoomNumber("");
   };
 

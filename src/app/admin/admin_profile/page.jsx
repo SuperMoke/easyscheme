@@ -22,7 +22,7 @@ export default function AdminProfile() {
     if (status === "loading") return;
 
     if (!session) {
-      router.push("/signin");
+      router.push("/student");
     } else {
       setUserEmail(session.user.email || "");
     }

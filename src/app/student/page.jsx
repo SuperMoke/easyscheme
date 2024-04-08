@@ -56,7 +56,7 @@ export default function ViewSavedSched() {
     return exams.map(({ id, exams }) => (
       <div key={id}>
         <div className="mb-10">
-          <Card style={{ width: "80rem" }}>
+          <Card style={{ width: "80rem" }} variant="gradient">
             <div className="flex justify-center item mb-5">
               <div>
                 <h1 className="text-1xl text-center font-bold mt-3 mb-2 text-black">

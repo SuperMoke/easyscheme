@@ -39,7 +39,7 @@ export default function CourseEntry() {
     if (status === "loading") return;
 
     if (!session) {
-      router.push("/signin");
+      router.push("/student");
     }
   }, [session, status, router]);
 

@@ -41,7 +41,7 @@ export default function FacultyEntry() {
     if (status === "loading") return;
 
     if (!session) {
-      router.push("/signin");
+      router.push("/student");
     }
   }, [session, status, router]);
 
@@ -64,14 +64,13 @@ export default function FacultyEntry() {
       salutation: salutation,
       facultystatus: facultystatus,
     });
-    // After adding the faculty, refetch the faculty
+  
     const querySnapshot = await getDocs(collection(db, "faculty"));
     const facultyData = [];
     querySnapshot.forEach((doc) => {
       facultyData.push({ id: doc.id, ...doc.data() });
     });
     setFaculty(facultyData);
-    // Clear input fields
     setFirstName("");
     setLastName("");
     setSalutation("");
@@ -109,7 +108,6 @@ export default function FacultyEntry() {
     setLastName("");
     setSalutation("");
     setStatus("");
-    // Refetch faculty after updating
     const querySnapshot = await getDocs(collection(db, "faculty"));
     const facultyData = [];
     querySnapshot.forEach((doc) => {

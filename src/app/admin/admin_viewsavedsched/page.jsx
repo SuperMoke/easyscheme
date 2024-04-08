@@ -19,7 +19,7 @@ export default function ViewSavedSched() {
       if (status === "loading") return;
 
       if (!session) {
-        router.push("/signin");
+        router.push("/student");
       }
 
       try {

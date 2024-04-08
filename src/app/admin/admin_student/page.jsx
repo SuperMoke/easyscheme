@@ -42,7 +42,7 @@ export default function StudentEntry() {
     if (status === "loading") return;
 
     if (!session) {
-      router.push("/signin");
+      router.push("/student");
     }
   }, [session, status, router]);
 
@@ -67,7 +67,6 @@ export default function StudentEntry() {
       section: section,
     });
 
-    // After adding the student, refetch the students
     const querySnapshot = await getDocs(collection(db, "students"));
     const studentsData = [];
     querySnapshot.forEach((doc) => {
@@ -75,7 +74,6 @@ export default function StudentEntry() {
     });
     setStudents(studentsData);
 
-    // Clear input fields
     setFirstName("");
     setLastName("");
     setStudentNumber("");
@@ -113,14 +111,13 @@ export default function StudentEntry() {
     setIsEditing(false);
     setEditStudentId(null);
 
-    // Clear input fields
+  
     setFirstName("");
     setLastName("");
     setStudentNumber("");
     setYearLevel("");
     setSection("");
 
-    // Refetch students after updating
     const querySnapshot = await getDocs(collection(db, "students"));
     const studentsData = [];
     querySnapshot.forEach((doc) => {

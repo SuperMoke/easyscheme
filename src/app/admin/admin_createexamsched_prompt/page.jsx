@@ -74,7 +74,7 @@ export default function CreateExamSchedPrompt() {
     if (status === "loading") return;
 
     if (!session) {
-      router_navigation.push("/signin");
+      router_navigation.push("/student");
     }
   }, [session, status, router]);
 
