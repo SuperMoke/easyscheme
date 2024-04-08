@@ -120,20 +120,10 @@ export default function CreateExamSched({examDetails}) {
     const institute = params.get("institute");
     const program = params.get("program");
     const yearLevel = params.get("yearLevel");
-
     fetchData(section, schoolYear, semester, examType, institute, program, yearLevel);
   }, []);
 
   const fetchData = (section, schoolYear, semester, examType, institute, program, yearLevel) => {
-    console.log("Fetching data with query parameters:");
-    console.log("Section:", section);
-    console.log("School Year:", schoolYear);
-    console.log("Semester:", semester);
-    console.log("Exam Type:", examType);
-    console.log("Institute:", institute);
-    console.log("Program:", program);
-    console.log("Year Level:", yearLevel);
-
     setSectionValue(section);
     setSchoolYearValue(schoolYear);
     setSemesterValue(semester);
@@ -261,6 +251,27 @@ export default function CreateExamSched({examDetails}) {
     setExams(examsData);
   };
 
+  const handleSave = async () => {
+    const examSchedule = {
+      examType: examTypeValue,
+      semester: semesterValue,
+      schoolYear: schoolYearValue,
+      yearLevel: yearLevelValue,
+      program: programValue,
+      section: sectionValue,
+      exams: exams,
+    };
+
+    try {
+      await addDoc(collection(db, "examSchedules"), examSchedule);
+      console.log("Exam schedule saved successfully!");
+      setExams([]);
+    } catch (error) {
+      console.error("Error saving exam schedule:", error);
+    }
+  };
+
+
   return (
     <>
       <NavbarComponent />
@@ -272,7 +283,7 @@ export default function CreateExamSched({examDetails}) {
         </div>
         <div className="flex items-center justify-center space-x-8">
           <Card style={{ width: "80rem" }}>
-            <div className="flex justify-center item mb-5">
+            <div className="flex justify-center  mb-5">
               <div >
               <h1 className="text-1xl text-center font-bold mt-3 mb-2 text-black">
                   {examTypeValue} Examination Schedule
@@ -362,6 +373,9 @@ export default function CreateExamSched({examDetails}) {
                 )}
               </tbody>
             </table>
+            <div className="flex justify-center mt-5">
+            <Button style={{width:"10rem"}} onClick={handleSave}>Save</Button>
+            </div>
           </Card>
           <Card style={{ width: "20rem" }}>
             <CardBody>

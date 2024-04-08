@@ -32,7 +32,9 @@ export default function Admin() {
           <Link href="admin/admin_createexamsched_prompt">
             <Button>Create Exam Schedule/s</Button>
           </Link>
+          <Link href="admin/admin_viewsavedsched">
           <Button>View Published Exam Schedules/s</Button>
+          </Link>
         </div>
       </div>
     </>

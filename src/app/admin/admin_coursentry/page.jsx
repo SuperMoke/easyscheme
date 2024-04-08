@@ -61,14 +61,13 @@ export default function CourseEntry() {
       courseTitle: courseTitle,
       courseCode: courseCode,
     });
-    // After adding the course, refetch the courses
+    
     const querySnapshot = await getDocs(collection(db, "courses"));
     const coursesData = [];
     querySnapshot.forEach((doc) => {
       coursesData.push({ id: doc.id, ...doc.data() });
     });
     setCourses(coursesData);
-    // Clear input fields
     setCourseTitle("");
     setCourseCode("");
   };
@@ -98,7 +97,6 @@ export default function CourseEntry() {
     setEditCourseId(null);
     setCourseTitle("");
     setCourseCode("");
-    // Refetch courses after updating
     const querySnapshot = await getDocs(collection(db, "courses"));
     const coursesData = [];
     querySnapshot.forEach((doc) => {

@@ -22,7 +22,7 @@ import {
   doc,
   updateDoc,
 } from "firebase/firestore";
-import { db } from "@/app/firebase";
+import { db } from "../../firebase";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
 import CreateExamSched from "../admin_createexamsched/page";
@@ -44,9 +44,7 @@ export default function CreateExamSchedPrompt() {
   const [isDone, setisDone] = useState(false)
 
   useEffect(() => {
-    // Enable Choose Program Select when an institute is selected
     setIsChooseProgramDisabled(selectedInstitute === "");
-    // Update programs based on the selected institute
     if (selectedInstitute === "ICSLIS") {
       setPrograms([
         "BACHELOR OF SCIENCE IN COMPUTER SCIENCE",

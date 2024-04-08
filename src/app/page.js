@@ -11,7 +11,7 @@ export default function Home() {
     if(status === "loading") return;
 
     if(!session){
-      router.push("/signin");
+      router.push("/student");
     } else {
       router.push('admin');
     }
