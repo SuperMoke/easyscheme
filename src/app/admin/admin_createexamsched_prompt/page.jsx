@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import NavbarComponent from "../navbar";
 import {
@@ -28,20 +27,19 @@ import { faPenToSquare, faTrash } from "@fortawesome/free-solid-svg-icons";
 import CreateExamSched from "../admin_createexamsched/page";
 
 export default function CreateExamSchedPrompt() {
-  const { data: session, status } = useSession();
   const router = useRouter();
   const [selectedInstitute, setSelectedInstitute] = useState("");
   const [selectedProgram, setSelectedProgram] = useState("");
   const [programs, setPrograms] = useState([]);
   const [isChooseProgramDisabled, setIsChooseProgramDisabled] = useState(true);
-  const [sectionValue, setSectionValue] = useState('');
-  const [schoolYearValue, setSchoolYearValue] = useState('');
-  const [semesterValue, setSemesterValue] = useState('');
-  const [examTypeValue, setExamTypeValue] = useState('');
-  const [instituteValue, setInstituteValue] = useState('');
-  const [programValue, setProgramValue] = useState('');
-  const [yearLevelValue, setYearLevelValue] = useState('');
-  const [isDone, setisDone] = useState(false)
+  const [sectionValue, setSectionValue] = useState("");
+  const [schoolYearValue, setSchoolYearValue] = useState("");
+  const [semesterValue, setSemesterValue] = useState("");
+  const [examTypeValue, setExamTypeValue] = useState("");
+  const [instituteValue, setInstituteValue] = useState("");
+  const [programValue, setProgramValue] = useState("");
+  const [yearLevelValue, setYearLevelValue] = useState("");
+  const [isDone, setisDone] = useState(false);
 
   useEffect(() => {
     setIsChooseProgramDisabled(selectedInstitute === "");
@@ -70,14 +68,6 @@ export default function CreateExamSchedPrompt() {
     }
   }, [selectedInstitute]);
 
-  React.useEffect(() => {
-    if (status === "loading") return;
-
-    if (!session) {
-      router_navigation.push("/student");
-    }
-  }, [session, status, router]);
-
   const handleStartCreating = () => {
     const queryParams = new URLSearchParams({
       section: sectionValue,
@@ -91,10 +81,6 @@ export default function CreateExamSchedPrompt() {
     router.push(`/admin/admin_createexamsched?${queryParams}`);
   };
 
-  
-
-  
-
   return (
     <>
       <NavbarComponent />
@@ -107,9 +93,7 @@ export default function CreateExamSchedPrompt() {
         <div className="flex items-center justify-center">
           <Card style={{ width: "20rem" }}>
             <CardBody>
-            <h1 className="text-1xl font-bold mb-3 text-black">
-                Section
-              </h1>
+              <h1 className="text-1xl font-bold mb-3 text-black">Section</h1>
               <Input
                 color="green"
                 label="Section"
@@ -133,19 +117,21 @@ export default function CreateExamSchedPrompt() {
                 Choose Semester
               </h1>
               <Select
-              value={semesterValue}
-              onChange={(value) => setSemesterValue(value)}>
-                <Option value = "1st Semester">1st Semester</Option>
-                <Option value = "2nd Semester">2nd Semester</Option>
-              </Select >
+                value={semesterValue}
+                onChange={(value) => setSemesterValue(value)}
+              >
+                <Option value="1st Semester">1st Semester</Option>
+                <Option value="2nd Semester">2nd Semester</Option>
+              </Select>
               <h1 className="text-1xl font-bold mb-3 text-black">
                 Choose Exam Type
               </h1>
               <Select
-              value={examTypeValue}
-              onChange={(value) => setExamTypeValue(value)}>
-                <Option value = "Midterm">Midterm</Option>
-                <Option value = "Final">Final</Option>
+                value={examTypeValue}
+                onChange={(value) => setExamTypeValue(value)}
+              >
+                <Option value="Midterm">Midterm</Option>
+                <Option value="Final">Final</Option>
               </Select>
               <h1 className="text-1xl font-bold mb-3 text-black">
                 Choose Institute
@@ -162,20 +148,27 @@ export default function CreateExamSchedPrompt() {
               </h1>
               <Select
                 value={programValue}
-                onChange={(value) => setProgramValue(value)} 
+                onChange={(value) => setProgramValue(value)}
               >
                 <Option value="">Select Institute</Option>
-                <Option value="BACHELOR OF SCIENCE IN COMPUTER SCIENCE">BACHELOR OF SCIENCE IN COMPUTER SCIENCE</Option>
-                <Option value="BACHELOR OF SCIENCE IN INFORMATION SYSTEMS">BACHELOR OF SCIENCE IN INFORMATION SYSTEMS</Option>
-                <Option value="ASSOCIATE IN COMPUTER TECHNOLOGY">ASSOCIATE IN COMPUTER TECHNOLOGY</Option>
+                <Option value="BACHELOR OF SCIENCE IN COMPUTER SCIENCE">
+                  BACHELOR OF SCIENCE IN COMPUTER SCIENCE
+                </Option>
+                <Option value="BACHELOR OF SCIENCE IN INFORMATION SYSTEMS">
+                  BACHELOR OF SCIENCE IN INFORMATION SYSTEMS
+                </Option>
+                <Option value="ASSOCIATE IN COMPUTER TECHNOLOGY">
+                  ASSOCIATE IN COMPUTER TECHNOLOGY
+                </Option>
               </Select>
               <h1 className="text-1xl font-bold mb-3 text-black">
                 Choose Year Level
               </h1>
               <Select
-              value={yearLevelValue}
-              onChange={(value) => setYearLevelValue(value)}>
-              <Option value="">Choose Year Level</Option>
+                value={yearLevelValue}
+                onChange={(value) => setYearLevelValue(value)}
+              >
+                <Option value="">Choose Year Level</Option>
                 <Option value="1st Year">1st Year</Option>
                 <Option value="2nd Year">2nd Year</Option>
                 <Option value="3rd Year">3rd Year</Option>

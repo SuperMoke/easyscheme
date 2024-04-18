@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import NavbarComponent from "../navbar";
 import {
@@ -29,16 +28,7 @@ export default function RoomManagement() {
   const [editRoomId, setEditRoomId] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const { data: session, status } = useSession();
   const router = useRouter();
-
-  React.useEffect(() => {
-    if (status === "loading") return;
-
-    if (!session) {
-      router.push("/student");
-    }
-  }, [session, status, router]);
 
   useEffect(() => {
     const fetchRooms = async () => {
@@ -89,9 +79,7 @@ export default function RoomManagement() {
     setIsEditing(false);
     setEditRoomId(null);
 
-    
     setRoomNumber("");
-
 
     const querySnapshot = await getDocs(collection(db, "rooms"));
     const roomsData = [];
@@ -101,9 +89,8 @@ export default function RoomManagement() {
     setRooms(roomsData);
   };
 
-  const filteredRooms = rooms.filter(
-    (room) =>
-      room.roomNumber.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredRooms = rooms.filter((room) =>
+    room.roomNumber.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (

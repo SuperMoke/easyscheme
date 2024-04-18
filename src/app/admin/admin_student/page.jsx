@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import NavbarComponent from "../navbar";
 import {
@@ -35,16 +34,7 @@ export default function StudentEntry() {
   const [editStudentId, setEditStudentId] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const { data: session, status } = useSession();
   const router = useRouter();
-
-  React.useEffect(() => {
-    if (status === "loading") return;
-
-    if (!session) {
-      router.push("/student");
-    }
-  }, [session, status, router]);
 
   useEffect(() => {
     const fetchStudents = async () => {
@@ -81,7 +71,14 @@ export default function StudentEntry() {
     setSection("");
   };
 
-  const TABLE_HEAD = ["First Name", "Last Name", "Student Number", "Year Level", "Section", "Action"];
+  const TABLE_HEAD = [
+    "First Name",
+    "Last Name",
+    "Student Number",
+    "Year Level",
+    "Section",
+    "Action",
+  ];
 
   const handleDeleteStudent = async (id) => {
     await deleteDoc(doc(db, "students", id));
@@ -111,7 +108,6 @@ export default function StudentEntry() {
     setIsEditing(false);
     setEditStudentId(null);
 
-  
     setFirstName("");
     setLastName("");
     setStudentNumber("");
@@ -179,68 +175,77 @@ export default function StudentEntry() {
                 </tr>
               </thead>
               <tbody>
-                {filteredStudents.map(({ id, firstName, lastName, studentNumber, yearLevel, section }) => (
-                  <tr key={id}>
-                    <td className="p-4 border-b border-blue-gray-50">
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {firstName}
-                      </Typography>
-                    </td>
-                    <td className="p-4 border-b border-blue-gray-50">
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {lastName}
-                      </Typography>
-                    </td>
-                    <td className="p-4 border-b border-blue-gray-50">
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {studentNumber}
-                      </Typography>
-                    </td>
-                    <td className="p-4 border-b border-blue-gray-50">
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {yearLevel}
-                      </Typography>
-                    </td>
-                    <td className="p-4 border-b border-blue-gray-50">
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {section}
-                      </Typography>
-                    </td>
-                    <td className="p-4 border-b border-blue-gray-50">
-                      <FontAwesomeIcon
-                        icon={faPenToSquare}
-                        className="mr-5"
-                        onClick={() => handleEditStudent(id)}
-                        style={{ cursor: "pointer" }}
-                      ></FontAwesomeIcon>
-                      <FontAwesomeIcon
-                        icon={faTrash}
-                        onClick={() => handleDeleteStudent(id)}
-                        style={{ cursor: "pointer" }}
-                      ></FontAwesomeIcon>
-                    </td>
-                  </tr>
-                ))}
+                {filteredStudents.map(
+                  ({
+                    id,
+                    firstName,
+                    lastName,
+                    studentNumber,
+                    yearLevel,
+                    section,
+                  }) => (
+                    <tr key={id}>
+                      <td className="p-4 border-b border-blue-gray-50">
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                        >
+                          {firstName}
+                        </Typography>
+                      </td>
+                      <td className="p-4 border-b border-blue-gray-50">
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                        >
+                          {lastName}
+                        </Typography>
+                      </td>
+                      <td className="p-4 border-b border-blue-gray-50">
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                        >
+                          {studentNumber}
+                        </Typography>
+                      </td>
+                      <td className="p-4 border-b border-blue-gray-50">
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                        >
+                          {yearLevel}
+                        </Typography>
+                      </td>
+                      <td className="p-4 border-b border-blue-gray-50">
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                        >
+                          {section}
+                        </Typography>
+                      </td>
+                      <td className="p-4 border-b border-blue-gray-50">
+                        <FontAwesomeIcon
+                          icon={faPenToSquare}
+                          className="mr-5"
+                          onClick={() => handleEditStudent(id)}
+                          style={{ cursor: "pointer" }}
+                        ></FontAwesomeIcon>
+                        <FontAwesomeIcon
+                          icon={faTrash}
+                          onClick={() => handleDeleteStudent(id)}
+                          style={{ cursor: "pointer" }}
+                        ></FontAwesomeIcon>
+                      </td>
+                    </tr>
+                  )
+                )}
               </tbody>
             </table>
           </Card>
@@ -320,5 +325,3 @@ export default function StudentEntry() {
     </>
   );
 }
-
-

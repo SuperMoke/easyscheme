@@ -5,7 +5,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import TimePicker from "react-time-picker";
 import "react-time-picker/dist/TimePicker.css";
 import "react-clock/dist/Clock.css";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import NavbarComponent from "../navbar";
 import {
@@ -48,7 +47,6 @@ export default function CreateExamSched() {
   const [roomdata, setRoomData] = useState([]);
   const [proctordata, setProctorData] = useState([]);
   const router = useRouter();
-  const { data: session, status } = useSession();
   const [sectionValue, setSectionValue] = useState("");
   const [schoolYearValue, setSchoolYearValue] = useState("");
   const [semesterValue, setSemesterValue] = useState("");
@@ -56,14 +54,6 @@ export default function CreateExamSched() {
   const [instituteValue, setInstituteValue] = useState("");
   const [programValue, setProgramValue] = useState("");
   const [yearLevelValue, setYearLevelValue] = useState("");
-
-  React.useEffect(() => {
-    if (status === "loading") return;
-
-    if (!session) {
-      router.push("/student");
-    }
-  }, [session, status, router]);
 
   useEffect(() => {
     const fetchCourseCodes = async () => {

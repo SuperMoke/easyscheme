@@ -1,18 +1,22 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import NavbarComponent from "../navbar";
 import { Alert, Button, Card, CardBody, Input } from "@material-tailwind/react";
 import { auth } from "../../firebase";
-import {useAuth} from "next-auth/react"
-import { getAuth, updatePassword } from "firebase/auth";
+import { useAuth } from "next-auth/react";
+import {
+  getAuth,
+  reauthenticateWithCredential,
+  updatePassword,
+} from "firebase/auth";
 import { EmailAuthProvider } from "firebase/auth";
 
 export default function AdminProfile() {
-  const { data: session, status } = useSession();
   const router = useRouter();
   const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
   const [isError, setIsError] = useState(false);
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -20,50 +24,44 @@ export default function AdminProfile() {
   const [userEmail, setUserEmail] = useState("");
 
   useEffect(() => {
-    if (status === "loading") return;
-
-    if (!session) {
-      router.push("/student");
-    } else {
-      setUserEmail(session.user.email || "");
-    }
-  }, [session, status, router]);
+    auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        setUserEmail(user.email);
+      }
+    });
+  }, []);
 
   const handleSaveChanges = async () => {
+    setIsError(false);
+    setIsSuccess(false);
     if (newPassword !== confirmPassword) {
-      setErrorMessage("New password and confirm password do not match.");
       setIsError(true);
+      setErrorMessage("New password and confirm password do not match.");
       return;
     }
-  
     try {
-      const response = await fetch('/api/change-password', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ oldPassword, newPassword, confirmPassword }),
-      });
-      if (response.ok) {
-        setOldPassword("");
+      const auth = getAuth();
+      const user = auth.currentUser;
+      const Emailcredential = EmailAuthProvider.credential(
+        user.email,
+        oldPassword
+      );
+      await reauthenticateWithCredential(user, Emailcredential);
+      await updatePassword(user, newPassword).then(() => {
+        setIsSuccess(true);
+        setSuccessMessage("Password changed successfully");
+        setIsError(false);
         setNewPassword("");
         setConfirmPassword("");
-        setErrorMessage("");
-        setIsError(false);
-        console.log("Password updated successfully");
-      } else {
-        const data = await response.json();
-        setErrorMessage(data.error || 'Failed to change password');
-        setIsError(true);
-        console.error(data.error); // Log specific error message
-      }
+        setOldPassword("");
+      });
     } catch (error) {
-      console.error('Error changing password:', error);
-      setErrorMessage('An error occurred while changing password');
+      console.error("Error changing password:", error);
       setIsError(true);
+      setIsSuccess(false);
+      setErrorMessage("An error occurred while changing password");
     }
   };
-  
 
   return (
     <>
@@ -80,6 +78,11 @@ export default function AdminProfile() {
               {isError && (
                 <Alert variant="outlined" color="red">
                   {errorMessage}
+                </Alert>
+              )}
+              {isSuccess && (
+                <Alert variant="outlined" color="green">
+                  {successMessage}
                 </Alert>
               )}
               <h1 className=" text-black mt-2 mb-3">Update Account Details</h1>

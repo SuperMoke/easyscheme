@@ -20,7 +20,8 @@ import {
 } from "@heroicons/react/24/outline";
 import { SquaresPlusIcon, UserCircleIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
-import { signOut, useSession } from 'next-auth/react'
+import { auth } from "../firebase";
+import { useRouter } from "next/navigation";
 
 function NavListMenu() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
@@ -146,16 +147,16 @@ function NavList() {
   return (
     <List className="mt-4 mb-6 p-0 lg:mt-0 lg:mb-0 lg:flex-row lg:p-1">
       <Link href="/admin">
-      <Typography
-        as="a"
-        variant="small"
-        color="blue-gray"
-        className="font-medium"
-      >
-        <ListItem className="flex items-center gap-2 py-2 pr-4">
-          Create Schedule
-        </ListItem>
-      </Typography>
+        <Typography
+          as="a"
+          variant="small"
+          color="blue-gray"
+          className="font-medium"
+        >
+          <ListItem className="flex items-center gap-2 py-2 pr-4">
+            Create Schedule
+          </ListItem>
+        </Typography>
       </Link>
       <Typography
         as="a"
@@ -183,7 +184,12 @@ function NavList() {
 }
 
 export default function NavbarComponent() {
-  
+  const router = useRouter();
+  const handleSignout = async () => {
+    await auth.signOut();
+    router.push("../student");
+  };
+
   return (
     <div>
       <Navbar className="mx-auto max-w-screen-xl py-3" placeholder={undefined}>
@@ -202,7 +208,7 @@ export default function NavbarComponent() {
             <Button
               placeholder={undefined}
               className="flex justify-center bg-green-900 ml-2"
-              onClick={() => signOut()}
+              onClick={handleSignout}
             >
               Logout
             </Button>

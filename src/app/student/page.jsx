@@ -1,6 +1,5 @@
-"use client"
+"use client";
 import React, { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import NavbarComponent from "./navbar";
 import { Card, Typography } from "@material-tailwind/react";
@@ -9,12 +8,10 @@ import { db } from "../firebase";
 
 export default function ViewSavedSched() {
   const [exams, setExams] = useState([]);
-  const { data: session, status } = useSession();
   const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
-
       try {
         const examSchedulesRef = collection(db, "examSchedules");
         const querySnapshot = await getDocs(examSchedulesRef);
@@ -39,7 +36,7 @@ export default function ViewSavedSched() {
     };
 
     fetchData();
-  }, [session, status, router]);
+  }, [router]);
 
   const renderExams = () => {
     const TABLE_HEAD = [
@@ -49,9 +46,12 @@ export default function ViewSavedSched() {
       "Start Time",
       "End Time",
       "Room",
-      "Proctor"
+      "Proctor",
     ];
 
+    if (exams.length === 0) {
+      return <div>No exams available</div>;
+    }
 
     return exams.map(({ id, exams }) => (
       <div key={id}>
@@ -60,16 +60,16 @@ export default function ViewSavedSched() {
             <div className="flex justify-center item mb-5">
               <div>
                 <h1 className="text-1xl text-center font-bold mt-3 mb-2 text-black">
-                  {exams[0].examType} Examination Schedule
+                  {exams[0]?.examType} Examination Schedule
                 </h1>
                 <h1 className="text-1xl text-center font-bold mt-3 mb-2 text-black">
-                  {exams[0].semester} {exams[0].schoolYear}
+                  {exams[0]?.semester} {exams[0]?.schoolYear}
                 </h1>
                 <h1 className="text-1xl text-center font-bold mt-3 mb-2 text-black">
-                  {exams[0].yearLevel} {exams[0].program} Students
+                  {exams[0]?.yearLevel} {exams[0]?.program} Students
                 </h1>
                 <h1 className="text-1xl text-center font-bold mt-3 mb-2 text-black">
-                  {exams[0].section}
+                  {exams[0]?.section}
                 </h1>
               </div>
             </div>
@@ -113,7 +113,9 @@ export default function ViewSavedSched() {
                       </td>
                       <td className="p-4 border-b border-blue-gray-50">
                         {examDate &&
-                          new Date(examDate.seconds * 1000).toLocaleDateString()}
+                          new Date(
+                            examDate.seconds * 1000
+                          ).toLocaleDateString()}
                       </td>
                       <td className="p-4 border-b border-blue-gray-50">
                         {startTime}
@@ -121,7 +123,9 @@ export default function ViewSavedSched() {
                       <td className="p-4 border-b border-blue-gray-50">
                         {endTime}
                       </td>
-                      <td className="p-4 border-b border-blue-gray-50">{room}</td>
+                      <td className="p-4 border-b border-blue-gray-50">
+                        {room}
+                      </td>
                       <td className="p-4 border-b border-blue-gray-50">
                         {proctor}
                       </td>

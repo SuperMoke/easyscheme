@@ -9,28 +9,21 @@ import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import Alert from "@material-tailwind/react/components/Alert";
 import Image from "next/image";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase";
 
 export default function Signin() {
-  const [email, setEmai] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
-
-  const handSignIn = async () => {
-    const result = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-      callbackUrl: "/",
-    });
-    if (result?.error) {
-      setError("Sorry, Wrong Email or Password!");
-    } else {
-      if (email.includes("user")) {
-        router.push("/user");
-      } else {
-        router.push("/admin");
-      }
+  const handSignIn = async (e) => {
+    const auth = getAuth();
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      router.push("/admin");
+    } catch (error) {
+      setError("Wrong Email and Password");
     }
   };
 
@@ -38,10 +31,11 @@ export default function Signin() {
     <>
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <Image
-        src="/cca-campus.jpg"
-        layout="fill"
-        objectFit="cover"
-        objectPosition="center"></Image>
+          src="/cca-campus.jpg"
+          layout="fill"
+          objectFit="cover"
+          objectPosition="center"
+        ></Image>
         <Card
           placeholder={undefined}
           className="mt-10  sm:mx-auto sm:w-full sm:max-w-sm"
@@ -68,7 +62,7 @@ export default function Signin() {
               crossOrigin={undefined}
               required
               size="lg"
-              onChange={(e) => setEmai(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
             />
             <Input
               color="green"

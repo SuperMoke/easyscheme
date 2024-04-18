@@ -1,23 +1,34 @@
-"use client";
+"use client"
 import React from "react";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 export default function Home() {
-  const {data: session, status} =  useSession();
   const router = useRouter();
+  const [session, setSession] = React.useState(null);
   
   React.useEffect(() => {
-    if(status === "loading") return;
+    const fetchSession = async () => {
+      try {
+        const response = await fetch("/api/session");
+        const data = await response.json();
+        setSession(data.session);
+      } catch (error) {
+        console.error("Error fetching session:", error);
+      }
+    };
 
-    if(!session){
+    fetchSession();
+  }, []);
+
+  React.useEffect(() => {
+    if (session === null) {
       router.push("/student");
     } else {
-      router.push('admin');
+      router.push("/user");
     }
-  },[session,status]);
+  }, [session, router]);
 
-  if(status == 'loading'){
-    return <div>Loading....</div>
+  if (session === null) {
+    return <div>Loading...</div>;
   }
 }

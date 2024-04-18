@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
 import Router, { useRouter } from "next/navigation";
 import NavbarComponent from "../navbar";
 import {
@@ -30,19 +29,7 @@ export default function CourseEntry() {
   const [isEditing, setIsEditing] = useState(false);
   const [editCourseId, setEditCourseId] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
-
-  const { data: session, status } = useSession();
   const router = useRouter();
-
-
-  React.useEffect(() => {
-    if (status === "loading") return;
-
-    if (!session) {
-      router.push("/student");
-    }
-  }, [session, status, router]);
-
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -61,7 +48,7 @@ export default function CourseEntry() {
       courseTitle: courseTitle,
       courseCode: courseCode,
     });
-    
+
     const querySnapshot = await getDocs(collection(db, "courses"));
     const coursesData = [];
     querySnapshot.forEach((doc) => {

@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
 import Router, { useRouter } from "next/navigation";
 import NavbarComponent from "../navbar";
 import {
@@ -34,16 +33,7 @@ export default function FacultyEntry() {
   const [editFacultyId, setEditFacultyId] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const { data: session, status } = useSession();
   const router = useRouter();
-
-  React.useEffect(() => {
-    if (status === "loading") return;
-
-    if (!session) {
-      router.push("/student");
-    }
-  }, [session, status, router]);
 
   useEffect(() => {
     const fetchFaculty = async () => {
@@ -64,7 +54,7 @@ export default function FacultyEntry() {
       salutation: salutation,
       facultystatus: facultystatus,
     });
-  
+
     const querySnapshot = await getDocs(collection(db, "faculty"));
     const facultyData = [];
     querySnapshot.forEach((doc) => {
@@ -77,7 +67,13 @@ export default function FacultyEntry() {
     setStatus("");
   };
 
-  const TABLE_HEAD = ["First Name", "Last Name", "Salutation", "Status", "Action"];
+  const TABLE_HEAD = [
+    "First Name",
+    "Last Name",
+    "Salutation",
+    "Status",
+    "Action",
+  ];
 
   const handleDeleteFaculty = async (id) => {
     await deleteDoc(doc(db, "faculty", id));
@@ -168,59 +164,61 @@ export default function FacultyEntry() {
                 </tr>
               </thead>
               <tbody>
-                {filteredFaculty.map(({ id, firstName, lastName, salutation, facultystatus }) => (
-                  <tr key={id}>
-                    <td className="p-4 border-b border-blue-gray-50">
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {firstName}
-                      </Typography>
-                    </td>
-                    <td className="p-4 border-b border-blue-gray-50">
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {lastName}
-                      </Typography>
-                    </td>
-                    <td className="p-4 border-b border-blue-gray-50">
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {salutation}
-                      </Typography>
-                    </td>
-                    <td className="p-4 border-b border-blue-gray-50">
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {facultystatus}
-                      </Typography>
-                    </td>
-                    <td className="p-4 border-b border-blue-gray-50">
-                      <FontAwesomeIcon
-                        icon={faPenToSquare}
-                        className="mr-5"
-                        onClick={() => handleEditFaculty(id)}
-                        style={{ cursor: "pointer" }}
-                      ></FontAwesomeIcon>
-                      <FontAwesomeIcon
-                        icon={faTrash}
-                        onClick={() => handleDeleteFaculty(id)}
-                        style={{ cursor: "pointer" }}
-                      ></FontAwesomeIcon>
-                    </td>
-                  </tr>
-                ))}
+                {filteredFaculty.map(
+                  ({ id, firstName, lastName, salutation, facultystatus }) => (
+                    <tr key={id}>
+                      <td className="p-4 border-b border-blue-gray-50">
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                        >
+                          {firstName}
+                        </Typography>
+                      </td>
+                      <td className="p-4 border-b border-blue-gray-50">
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                        >
+                          {lastName}
+                        </Typography>
+                      </td>
+                      <td className="p-4 border-b border-blue-gray-50">
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                        >
+                          {salutation}
+                        </Typography>
+                      </td>
+                      <td className="p-4 border-b border-blue-gray-50">
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                        >
+                          {facultystatus}
+                        </Typography>
+                      </td>
+                      <td className="p-4 border-b border-blue-gray-50">
+                        <FontAwesomeIcon
+                          icon={faPenToSquare}
+                          className="mr-5"
+                          onClick={() => handleEditFaculty(id)}
+                          style={{ cursor: "pointer" }}
+                        ></FontAwesomeIcon>
+                        <FontAwesomeIcon
+                          icon={faTrash}
+                          onClick={() => handleDeleteFaculty(id)}
+                          style={{ cursor: "pointer" }}
+                        ></FontAwesomeIcon>
+                      </td>
+                    </tr>
+                  )
+                )}
               </tbody>
             </table>
           </Card>
@@ -285,4 +283,3 @@ export default function FacultyEntry() {
     </>
   );
 }
-

@@ -20,18 +20,14 @@ import {
 } from "@heroicons/react/24/outline";
 import { SquaresPlusIcon, UserCircleIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
-import { signOut, useSession } from 'next-auth/react'
 import { useRouter } from "next/navigation";
-
-
-
 
 export default function NavbarComponent() {
   const router = useRouter();
   const handleClick = () => {
-    router.push("/signin")
-  }
-  
+    router.push("/signin");
+  };
+
   return (
     <div>
       <Navbar className="mx-auto max-w-screen-xl py-3" placeholder={undefined}>

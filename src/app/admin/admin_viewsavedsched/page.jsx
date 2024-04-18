@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import NavbarComponent from "../navbar";
 import { Card, Typography } from "@material-tailwind/react";
@@ -11,17 +10,10 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 export default function ViewSavedSched() {
   const [exams, setExams] = useState([]);
-  const { data: session, status } = useSession();
   const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
-      if (status === "loading") return;
-
-      if (!session) {
-        router.push("/student");
-      }
-
       try {
         const examSchedulesRef = collection(db, "examSchedules");
         const querySnapshot = await getDocs(examSchedulesRef);
@@ -46,7 +38,7 @@ export default function ViewSavedSched() {
     };
 
     fetchData();
-  }, [session, status, router]);
+  }, [router]);
 
   const renderExams = () => {
     const TABLE_HEAD = [
