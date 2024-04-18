@@ -52,7 +52,7 @@ export default function ViewSavedSched() {
     ];
 
     const handleDelete = async (id) => {
-      console.log("Deleting exam with id:", id); // Add this line to check the id
+      console.log("Deleting exam with id:", id);
       try {
         await deleteDoc(doc(db, "examSchedules", id));
         setExams((prevExams) => prevExams.filter((exam) => exam.id !== id));
